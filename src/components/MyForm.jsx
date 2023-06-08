@@ -26,22 +26,22 @@ function MyForm({departure_airport, arrival_airport, departure_time}) {
             initialValues={{ name: "", email: "", cnic: "", phoneNo: "", passportNo:"", nationality:"" }}
             onSubmit={async (values,actions) => {
               //go to a link
-              router.push("https://buy.stripe.com/test_3cs6si10q7gIfHG5kk")
               console.log("Hello World")
-
+              
               try
               {
                 console.log("Here")
-              let request = await fetch("/api/mail", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  departure_airport: departure_airport,
-                  arrival_airport: arrival_airport,
-                  departure_time: departure_time,
-
-                }),
-              });
+                let request = await fetch("/api/mail", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    departure_airport: departure_airport,
+                    arrival_airport: arrival_airport,
+                    departure_time: departure_time,
+                    
+                  }),
+                });
+                router.push("https://buy.stripe.com/test_3cs6si10q7gIfHG5kk")
             }
             catch(err)
             {

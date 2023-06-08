@@ -18,7 +18,7 @@ export default function handler(req, res) {
             from: "+16205249748",
             to: "+923435100977",
         })
-        .then((message) => console.log(message.sid))
-        .catch((err) => console.log("error", err));
+        .then((message) => res.send(message.sid)
+        .catch((err) => res.send(err)));
   }
 }

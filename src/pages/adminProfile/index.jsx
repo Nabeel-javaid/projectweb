@@ -64,9 +64,9 @@ const AdminProfile = ({ user }) => {
             </div>
           </div>
           <div className="flex justify-center mt-6">
-            {/* <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded" disabled>
+            <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded" disabled>
               Edit Profile
-            </button> */}
+            </button>
 
             <div className="ml-4">
               <button

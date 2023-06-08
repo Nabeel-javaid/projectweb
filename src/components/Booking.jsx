@@ -26,7 +26,14 @@ const Booking = () => {
     console.log("Arrival City: ", arrivalCity);
     console.log("Date: ", date);
     //use nextjs function to go to /app/booking
-    router.push("/booking?departureCity=" + departureCity + "&arrivalCity=" + arrivalCity + "&date=" + date);
+    router.push(
+      "/booking?departureCity=" +
+        departureCity +
+        "&arrivalCity=" +
+        arrivalCity +
+        "&date=" +
+        date
+    );
   };
 
   return (
