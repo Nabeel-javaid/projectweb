@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from 'utils/supabase';
+import { useRouter } from 'next/router';
 
 const AdminProfile = ({ user }) => {
   const [authorized, setAuthorized] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchAdminEmail = async () => {
@@ -13,18 +15,26 @@ const AdminProfile = ({ user }) => {
         const adminEmails = data.map((admin) => admin.email);
 
         if (adminEmails.includes('nabeeljaved944@gmail.com')) {
-          setAuthorized(true); // Set authorized to true if user is in the adminEmails list
+          setAuthorized(true);
         } else {
-          setAuthorized(false); // Set authorized to false if user is not in the adminEmails list
+          setAuthorized(false);
         }
       } catch (error) {
         console.error('Error fetching admin email:', error.message);
-        setAuthorized(false); // Set authorized to false in case of any error
+        setAuthorized(false);
       }
     };
 
     fetchAdminEmail();
-  }, [user]);
+  }, []);
+
+  const handleManagePassengers = () => {
+    router.push('/managePassengers');
+  };
+
+  const handleManageFlights = () => {
+    router.push('/adminFlights');
+  };
 
   return (
     <>
@@ -42,7 +52,7 @@ const AdminProfile = ({ user }) => {
               </div>
               <div>
                 <p className="text-gray-600">Email:</p>
-                <p className="font-semibold">{"nabeeljaved944@gmail.com"}</p>
+                <p className="font-semibold">nabeeljaved944@gmail.com</p>
               </div>
               <div>
                 <p className="text-gray-600">Phone:</p>
@@ -57,6 +67,22 @@ const AdminProfile = ({ user }) => {
               <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
                 Edit Profile
               </button>
+              <div className="ml-4">
+                <button
+                  className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+                  onClick={handleManagePassengers}
+                >
+                  Manage Passengers
+                </button>
+              </div>
+              <div className="ml-4">
+                <button
+                  className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+                  onClick={handleManageFlights}
+                >
+                  Manage Flights
+                </button>
+              </div>
             </div>
           </div>
         </div>
