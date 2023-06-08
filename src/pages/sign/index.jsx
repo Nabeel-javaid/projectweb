@@ -16,8 +16,11 @@ import {
   Icon,
 } from "@chakra-ui/react";
 
-import { useSession,signIn,signOut } from "next-auth/react";
+import { useSession, signIn, signOut } from "next-auth/react";
 import { useEffect } from "react";
+
+// import supabase
+import { supabase } from "utils/supabase";
 
 const avatars = [
   {
@@ -43,14 +46,35 @@ const avatars = [
 ];
 
 export default function JoinOurTeam() {
-  const { data: user ,status} = useSession()
+  const { data: user, status } = useSession()
   useEffect(() => {
     console.log(user)
-    if(status == "authenticated")  
-    {
-      window.location.href = "/app"
-    }
-  }, [user])
+
+    //fetch admin email from supabase
+
+    const fetchAdminEmail = async () => {
+      console.log("Call the functions")
+
+      const { data, error } = await supabase.from('admin').select('email');
+      if (error) throw new Error(error.message);
+
+      const adminEmails = data.map((admin) => admin.email);
+
+
+      if (status === 'authenticated' && adminEmails.includes(user.user.email)) {
+        window.location.href = '/adminProfile';
+      }
+      else if (status === 'authenticated' && !adminEmails.includes(user.email)) {
+        window.location.href = '/app';
+      }
+    };
+
+    fetchAdminEmail();
+
+  }, [status, user]);
+
+
+
 
 
   return (
@@ -67,7 +91,7 @@ export default function JoinOurTeam() {
             lineHeight={1.1}
             fontSize={{ base: "2xl", sm: "4xl", md: "5xl", lg: "6xl" }}
           >
-             Platform For Students, business person,{" "}
+            Platform For Students, business person,{" "}
             <Text
               as={"span"}
               bgGradient="linear(to-r, red.400,pink.400)"
@@ -162,35 +186,36 @@ export default function JoinOurTeam() {
           </Stack>
           <Box as={"form"} mt={10}>
             {/* chakra button with padding  */}
-          
-              <Stack spacing={4}>
-                <Button
-                  fontFamily={"heading"}
-                  bg={"blue.400"}
-                  _hover={{ bg: "blue.300" }}
-                  color={"white"}
-                  size="lg"
-                  onClick={() => signIn()}
-                >
-                  Sign In With Google
-                </Button>
-              </Stack>
+
+            <Stack spacing={4}>
+              <Button
+                fontFamily={"heading"}
+                bg={"blue.400"}
+                _hover={{ bg: "blue.300" }}
+                color={"white"}
+                size="lg"
+                onClick={() => signIn()}
+              >
+                Sign In With Google
+              </Button>
+            </Stack>
           </Box>
           <Box as={"form"} mt={10}>
             {/* chakra button with padding  */}
-          
-              <Stack spacing={4}>
-                <Button
-                  fontFamily={"heading"}
-                  bg={"blue.400"}
-                  _hover={{ bg: "blue.300" }}
-                  color={"white"}
-                  size="lg"
-                  onClick={() => signIn()}
-                >
-                  Book without signIn
-                </Button>
-              </Stack>
+
+            <Stack spacing={4}>
+              <Button
+                fontFamily={"heading"}
+                bg={"blue.400"}
+                _hover={{ bg: "blue.300" }}
+                color={"white"}
+                size="lg"
+                onClick={() => (window.location.href = '/app')}
+              >
+                Book without signIn
+              </Button>
+
+            </Stack>
           </Box>
         </Stack>
       </Container>
