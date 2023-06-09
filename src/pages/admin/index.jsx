@@ -81,7 +81,7 @@ const AdminFlights = () => {
     <div className="h-[100vh]">
       <div className="flex items-center justify-center h-[30%]">
         <div className="font-bold text-2xl leading-tight flex items-center justify-center text-slate-600 shadow-lg p-8 mt-14 rounded-lg border-orange-400 border-2">
-          Manage Flights
+          Manage Passengers
         </div>
       </div>
 

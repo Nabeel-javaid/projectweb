@@ -131,7 +131,6 @@ export async function getServerSideProps(context) {
     .from("bookings")
     .select("*")
     .eq("departure_airport", departureCity)
-    .eq("status", "Confirmed")
     .eq("arrival_airport", arrivalCity);
   // .eq('date', date)
 

@@ -17,7 +17,7 @@ export default function handler(req, res) {
             body: `Your flight from ${departure_airport} to ${arrival_airport} is scheduled to depart at ${departure_time}`,
             from: "+16205249748",
             to: "+923435100977",
-        })
+        }) 
         .then((message) => res.send(message.sid)
         .catch((err) => res.send(err)));
   }
