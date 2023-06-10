@@ -11,28 +11,28 @@ const AdminFlights = () => {
   const [flights, setFlights] = useState([]);
   const [editFlightId, setEditFlightId] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
-  
-  const router = useRouter();
-  const { data: session } = useSession();
 
+  const router = useRouter();
+  const { data: session, status } = useSession();
+
+  
   const [authorized, setAuthorized] = useState(false);
+
 
   useEffect(() => {
     const fetchAdminEmail = async () => {
       try {
-        const { data, error } = await supabase.from('admin').select('email');
-        if (error) throw new Error(error.message);
+        if (status === 'authenticated' && session) {
+          const { data, error } = await supabase.from('admin').select('email');
+          if (error) throw new Error(error.message);
 
-        const adminEmails = data.map((admin) => admin.email);
+          const adminEmails = data.map((admin) => admin.email);
 
-        if (
-          session &&
-          session.status === 'authenticated' &&
-          adminEmails.includes(session.user.email)
-        ) {
-          setAuthorized(true);
-        } else {
-          setAuthorized(false);
+          if (adminEmails.includes(session.user.email)) {
+            setAuthorized(true);
+          } else {
+            setAuthorized(false);
+          }
         }
       } catch (error) {
         console.error('Error fetching admin email:', error.message);
@@ -41,7 +41,8 @@ const AdminFlights = () => {
     };
 
     fetchAdminEmail();
-  }, [session]);
+  }, [status, session]);
+
 
 
 
@@ -115,26 +116,28 @@ const AdminFlights = () => {
   }, []);
 
 
-  if (!session) {
+  if (status === 'loading') {
     return (
       <div className="flex items-center justify-center h-screen">
-        <h2 className="text-2xl text-gray-600">
-          You are not signed in. Please sign in to view this page.
-        </h2>
+        <h2 className="text-lg font-medium text-gray-600">Loading...</h2>
       </div>
     );
+  }
+
+  if (!session) {
+    router.push('/sign'); // Redirect to the sign-in page if session is not found
+    return null;
   }
 
   if (!authorized) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <h2 className="text-2xl text-gray-600">
-          You are not authorized to view this page.
+        <h2 className="text-lg font-medium text-red-600">
+          You are not authorized to access this page.
         </h2>
       </div>
     );
   }
-
 
   return (
     <div className="h-[100vh]">
