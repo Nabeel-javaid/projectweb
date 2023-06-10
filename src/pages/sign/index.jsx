@@ -1,4 +1,4 @@
-import Link from "next/link";
+import React, { useEffect } from 'react';
 import {
   Box,
   Flex,
@@ -12,68 +12,59 @@ import {
   Avatar,
   AvatarGroup,
   useBreakpointValue,
-  IconProps,
   Icon,
-} from "@chakra-ui/react";
-
-import { useSession, signIn, signOut } from "next-auth/react";
-import { useEffect } from "react";
-
-// import supabase
-import { supabase } from "utils/supabase";
+} from '@chakra-ui/react';
+import { useSession, signIn } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import { supabase } from 'utils/supabase';
 
 const avatars = [
   {
-    name: "Ryan Florence",
-    url: "https://bit.ly/ryan-florence",
+    name: 'Ryan Florence',
+    url: 'https://bit.ly/ryan-florence',
   },
   {
-    name: "Segun Adebayo",
-    url: "https://bit.ly/sage-adebayo",
+    name: 'Segun Adebayo',
+    url: 'https://bit.ly/sage-adebayo',
   },
   {
-    name: "Kent Dodds",
-    url: "https://bit.ly/kent-c-dodds",
+    name: 'Kent Dodds',
+    url: 'https://bit.ly/kent-c-dodds',
   },
   {
-    name: "Prosper Otemuyiwa",
-    url: "https://bit.ly/prosper-baba",
+    name: 'Prosper Otemuyiwa',
+    url: 'https://bit.ly/prosper-baba',
   },
   {
-    name: "Christian Nwamba",
-    url: "https://bit.ly/code-beast",
+    name: 'Christian Nwamba',
+    url: 'https://bit.ly/code-beast',
   },
 ];
 
 export default function JoinOurTeam() {
-  const { data: user, status } = useSession()
+  const { data: user, status } = useSession();
+  const router = useRouter();
   useEffect(() => {
-    console.log(user)
-
-    //fetch admin email from supabase
-
     const fetchAdminEmail = async () => {
-      console.log("Call the functions")
+      try {
+          const { data, error } = await supabase.from('admin').select('email');
+          if (error) throw new Error(error.message);
 
-      const { data, error } = await supabase.from('admin').select('email');
-      if (error) throw new Error(error.message);
+          const adminEmails = data.map((admin) => admin.email);
 
-      const adminEmails = data.map((admin) => admin.email);
-
-
-      if (status === 'authenticated' && adminEmails.includes(user.user.email)) {
-        window.location.href = '/adminProfile';
-      }
-      else if (status === 'authenticated' && !adminEmails.includes(user.email)) {
-        window.location.href = '/app';
+          if (adminEmails.includes(user.user.email)) {
+            router.push('/adminProfile');
+          } else {
+            router.push('/app');
+          }
+        
+      } catch (error) {
+        console.error('Error fetching admin email:', error.message);
       }
     };
 
     fetchAdminEmail();
-
-  }, [status, user]);
-
-
+  }, [status, user, router]);
 
 
 

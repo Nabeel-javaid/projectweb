@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 import { supabase } from '/utils/supabase'; // Update the import path based on your project structure
 
 const AdminFlights = () => {
@@ -9,6 +11,41 @@ const AdminFlights = () => {
   const [flights, setFlights] = useState([]);
   const [editFlightId, setEditFlightId] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
+  
+  const router = useRouter();
+  const { data: session } = useSession();
+
+  const [authorized, setAuthorized] = useState(false);
+
+  useEffect(() => {
+    const fetchAdminEmail = async () => {
+      try {
+        const { data, error } = await supabase.from('admin').select('email');
+        if (error) throw new Error(error.message);
+
+        const adminEmails = data.map((admin) => admin.email);
+
+        if (
+          session &&
+          session.status === 'authenticated' &&
+          adminEmails.includes(session.user.email)
+        ) {
+          setAuthorized(true);
+        } else {
+          setAuthorized(false);
+        }
+      } catch (error) {
+        console.error('Error fetching admin email:', error.message);
+        setAuthorized(false);
+      }
+    };
+
+    fetchAdminEmail();
+  }, [session]);
+
+
+
+
 
   // Fetch flights from Supabase
   const fetchFlights = async () => {
@@ -76,6 +113,28 @@ const AdminFlights = () => {
   useEffect(() => {
     fetchFlights();
   }, []);
+
+
+  if (!session) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <h2 className="text-2xl text-gray-600">
+          You are not signed in. Please sign in to view this page.
+        </h2>
+      </div>
+    );
+  }
+
+  if (!authorized) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <h2 className="text-2xl text-gray-600">
+          You are not authorized to view this page.
+        </h2>
+      </div>
+    );
+  }
+
 
   return (
     <div className="h-[100vh]">

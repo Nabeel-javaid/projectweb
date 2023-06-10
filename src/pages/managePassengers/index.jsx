@@ -3,12 +3,45 @@ import { useForm } from 'react-hook-form';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { supabase } from '/utils/supabase';
+import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 
 const AdminPassengers = () => {
   const { register, handleSubmit, reset } = useForm();
   const [passengers, setPassengers] = useState([]);
   const [editPassengerId, setEditPassengerId] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
+
+
+  const [authorized, setAuthorized] = useState(false);
+  const router = useRouter();
+  const { data: session, status } = useSession();
+
+
+  useEffect(() => {
+    const fetchAdminEmail = async () => {
+      try {
+        if (status === 'authenticated' && session) {
+          const { data, error } = await supabase.from('admin').select('email');
+          if (error) throw new Error(error.message);
+
+          const adminEmails = data.map((admin) => admin.email);
+
+          if (adminEmails.includes(session.user.email)) {
+            setAuthorized(true);
+          } else {
+            setAuthorized(false);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching admin email:', error.message);
+        setAuthorized(false);
+      }
+    };
+
+    fetchAdminEmail();
+  }, [status, session]);
+
 
   // Fetch passengers from Supabase
   const fetchPassengers = async () => {
@@ -80,6 +113,29 @@ const AdminPassengers = () => {
     fetchPassengers();
   }, []);
 
+
+  if (status === 'loading') {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <h2 className="text-lg font-medium text-gray-600">Loading...</h2>
+      </div>
+    );
+  }
+
+  if (!session) {
+    router.push('/sign'); // Redirect to the sign-in page if session is not found
+    return null;
+  }
+
+  if (!authorized) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <h2 className="text-lg font-medium text-red-600">
+          You are not authorized to access this page.
+        </h2>
+      </div>
+    );
+  }
   return (
     <div className="h-screen">
       <div className="flex items-center justify-center h-1/4">
