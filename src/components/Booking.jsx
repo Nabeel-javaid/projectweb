@@ -7,16 +7,14 @@ import { FaSearch } from "react-icons/fa";
 import { useRouter } from "next/router";
 
 const Booking = () => {
-  //make a state for the departure city
-  const [departureCity, setDepartureCity] = useState("");
-  const [arrivalCity, setArrivalCity] = useState("");
+  const [departureCity, setDepartureCity] = useState(null);
+  const [arrivalCity, setArrivalCity] = useState(null);
   const [date, setDate] = useState("");
 
   const router = useRouter();
 
   const dateHandler = (e) => {
     setDate(e.target.value);
-    //print the e.target.value
     console.log("DATEEEE: ", date);
     console.log(e.target.value);
   };
@@ -25,7 +23,7 @@ const Booking = () => {
     console.log("Departure City: ", departureCity);
     console.log("Arrival City: ", arrivalCity);
     console.log("Date: ", date);
-    //use nextjs function to go to /app/booking
+
     router.push(
       "/booking?departureCity=" +
         departureCity +
@@ -99,19 +97,18 @@ const Booking = () => {
               id="date"
               className="w-[20%] border h-full rounded-lg ml-7 flex flex-col text-base font-bold text-slate-600"
             >
-              {/* <label for="birthday"></label> */}
               <input
                 type="date"
                 id="birthday"
                 name="birthday"
-                value={"Pick The Date"}
+                value={date}
                 className="w-full h-full px-5"
                 onChange={dateHandler}
               />
             </div>
             <div
               id="searchButton"
-              className="w-[10%] h-full rounded-xl border ml-auto flex flex-col items-center justify-center bg-orange-400 "
+              className="w-[10%] h-full rounded-xl border ml-auto flex flex-col items-center justify-center bg-orange-400"
               onClick={bookingHandler}
             >
               <FaSearch size={30} className="text-white"></FaSearch>

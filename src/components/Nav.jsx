@@ -4,6 +4,7 @@ import { useSession, signIn, signOut } from 'next-auth/react';
 
 const Nav = () => {
   const router = useRouter();
+  const { data: session, status } = useSession();
 
   const handleLogout = async () => {
     await signOut();
@@ -15,13 +16,15 @@ const Nav = () => {
       <nav className="bg-white px-2 sm:px-4 py-2.5 dark:bg-gray-900 fixed w-full z-20 top-0 left-0 border-b border-gray-200 dark:border-gray-600">
         <div className="container flex flex-wrap items-center justify-between mx-auto">
           <div className="flex md:order-2">
-            <button
-              type="button"
-              className="text-white bg-orange-500 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-3 md:mr-0 dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800"
-              onClick={handleLogout}
-            >
-              Logout
-            </button>
+            {session && (
+              <button
+                type="button"
+                className="text-white bg-orange-500 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-3 md:mr-0 dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+            )}
             <button
               data-collapse-toggle="navbar-sticky"
               type="button"
