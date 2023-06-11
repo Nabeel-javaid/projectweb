@@ -11,6 +11,7 @@ import Lottie from "react-lottie";
 import animationData from "../../components/lottie/arrow.json";
 //import next link component
 import Link from "next/link";
+import AdminDashboard from "../admin/index";
 
 const Index = ({ data }) => {
   const logos = [qatar, emirates, singapore];
@@ -131,8 +132,10 @@ export async function getServerSideProps(context) {
     .select("*")
     .eq("departure_airport", departureCity)
     .eq("arrival_airport", arrivalCity);
+  // .eq('date', date)
 
   console.log(data);
+  // <AdminDashboard>  </AdminDashboard>
 
   return {
     props: {
