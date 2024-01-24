@@ -1,8 +1,6 @@
-import Booking from "@/components/Booking";
 import React from "react";
 import Nav from "../../components/Nav";
 import Typewriter from "typewriter-effect";
-import Lottie from 'react-lottie';
 import animationData from '../../components/lottie/map.json'
 const index = () => {
     const defaultOptions = {
